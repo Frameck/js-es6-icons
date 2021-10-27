@@ -114,7 +114,10 @@ populateSelect(newIcons)
 
 
 
-
+/**
+ * Funzione che popola la select con le categorie delle icone
+ * @param {{}} obj oggetto dal quale estrarre le categorie
+ */
 function populateSelect(obj) {
     const types = Object.keys(obj)
     let options = '<option value="all">All</option>'
@@ -127,13 +130,21 @@ function populateSelect(obj) {
 }
 
 
-function sortIntoCategories(array) {
+/**
+ * Crea un oggetto dividendo le icone in oggetti che hanno come chiave le categorie
+ * @param {[]} arrayIcons array di partenza fornito dalla consegna
+ * @returns oggetto contenente le icone smistate
+ */
+function sortIntoCategories(arrayIcons) {
     let newIcons = {}
-    array.forEach(icon => {
+
+    arrayIcons.forEach(icon => {
         const { name, prefix, type, family } = icon
+
         if (!newIcons[type]) {
             newIcons[type] = []
         }
+		
         newIcons[type].push({
             name,
             prefix,
@@ -141,10 +152,16 @@ function sortIntoCategories(array) {
             family
         })
     })
+
     return newIcons
 }
 
 
+/**
+ * Funzione che aggiunge al DOM le icone in base alla categoria passata
+ * @param {string} category categoria per filtrare le icone
+ * @param {{}} obj oggetto che contiene le icone filtrate per categorie
+ */
 function generateCards(category, obj) {
     let cardsToHtml = ''
     
@@ -152,17 +169,14 @@ function generateCards(category, obj) {
         for (const key in obj) {
             if (Object.hasOwnProperty.call(obj, key)) {
                 const iconsArray = obj[key]
-
                 iconsArray.forEach(icon => {
-                    const { name, prefix, type, family } = icon
-                    cardsToHtml += createCardElement(name, prefix, type, family)
+                    cardsToHtml += createCardElement(icon)
                 })
             }
         }
     } else {
         obj[category].forEach(icon => {
-            const { name, prefix, type, family } = icon
-            cardsToHtml += createCardElement(name, prefix, type, family)
+            cardsToHtml += createCardElement(icon)
         })
     }
     
@@ -170,16 +184,27 @@ function generateCards(category, obj) {
 }
 
 
-function createCardElement(name, prefix, type, family) {
+/**
+ * Funzione che crea il codice html per un'icona che viene passata come argomento
+ * @param {{}} icon oggetto contenente un'icona
+ * @returns codice html della card
+ */
+function createCardElement(icon) {
+	const { name, prefix, type, family } = icon
+
     let color = ''
     // determine the color
-    if (type === 'animal') {
-        color = 'blue'
-    } else if (type === 'vegetable') {
-        color = 'orange'
-    } else {
-        color = 'yellow'
-    }
+	switch (type) {
+		case 'animal':
+			color = 'blue'
+			break
+		case 'vegetable':
+			color = 'orange'
+			break
+		case 'user':
+			color = 'green'
+			break
+	}
 
     const card = 
     `<div class="card">
@@ -191,6 +216,7 @@ function createCardElement(name, prefix, type, family) {
 }
 
 
+// event listener sulla select per filtrare le icone
 select.addEventListener('change', function () {
     const type = select.value
     generateCards(type, newIcons)

@@ -31,8 +31,8 @@ nav span {
     padding: 20px;
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 50px;
+    row-gap: 50px;
+    column-gap: 110px;
     background-color: rgb(227, 227, 227);
 }
 
